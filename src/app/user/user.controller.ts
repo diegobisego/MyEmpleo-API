@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from './entities/user.entity';
 
+@ApiTags('Usuarios')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+  // CREAR UN USUARIO
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @ApiOperation({
+    summary: 'Creacion del user',
+    description: 'Crea un usuario en la base de datos',
+  })
+  @ApiResponse({ status: 201, description: 'Usuario creado con éxito' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+  @Post('postUser')
+  async postUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    try {
+      const user = await this.userService.createUser(createUserDto);
+      return user;
+    } catch (error) {
+      throw new HttpException(
+        `Error al intentar crear el usuario: ${
+          error.message || 'Error interno del servidor'
+        }`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

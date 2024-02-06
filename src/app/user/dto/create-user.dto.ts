@@ -12,23 +12,23 @@ export class CreateUserDto {
 
     @IsString({ message: 'El campo userName debe ser un String' })
     @IsNotEmpty()
-    @ApiProperty({description: 'Hace referencia a el nombre del usuario' , example:'Producto 1' })
+    @ApiProperty({description: 'Hace referencia a el nombre del usuario' , example:'UsuarioNombre 1' })
     userName:string
 
     @IsString({ message: 'El campo userLastName debe ser un String' })
     @IsNotEmpty()
-    @ApiProperty({description: 'Hace referencia al apellido del usuario' , example:'Producto 1' })
+    @ApiProperty({description: 'Hace referencia al apellido del usuario' , example:'UsuarioApellido 1' })
     userLastName:string
 
 
-    @IsObject({ message: 'El campo idJob debe ser un objeto entero' })
+    @IsObject({ message: 'El campo idJob debe ser un objeto' })
     @IsNotEmpty()
-    @ApiProperty({ description:'Id de del Job, debe ser un objeto', example:'"idJob": {"id": 4}' })
+    @ApiProperty({ description:'Id de del Job, debe ser un objeto con id', example:'{"id": 2}' })
     idJob: object;
 
-    @IsObject({ message: 'El campo idTaxCondition debe ser un objeto entero' })
+    @IsObject({ message: 'El campo idTaxCondition debe ser un objeto' })
     @IsNotEmpty()
-    @ApiProperty({ description:'Id de de idTaxCondition, debe ser un objeto', example:'"idTaxCondition": {"id": 4}' })
+    @ApiProperty({ description:'Id de de idTaxCondition, debe ser un Objeto con id', example:'{"id": 2}' })
     idTaxCondition: object;
 
     @IsNumber({maxDecimalPlaces: 2},{ message: 'El campo serviceCost debe ser un numero' })
@@ -39,7 +39,7 @@ export class CreateUserDto {
     @IsOptional()
     @IsString({ message: 'El campo businessName debe ser un string' })
     @IsNotEmpty()
-    @ApiProperty({description: 'Hace referencia al nombre de la empresa' , example:'1500' })
+    @ApiProperty({description: 'Hace referencia al nombre de la empresa' , example:'La Empresa SRL' })
     businessName?:string
 
 }
