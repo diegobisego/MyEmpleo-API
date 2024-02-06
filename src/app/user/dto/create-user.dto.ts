@@ -7,8 +7,8 @@ export class CreateUserDto {
     @IsOptional()
     @IsString({ message: 'El campo photo debe ser una cadena que representa una URL' })
     @IsUrl({}, { message: 'El campo photo debe ser una URL válida' })
-    @ApiProperty({ description: 'URL de la foto de perfil', example: 'https://tu-servidor.com/uploads/profile_1.jpg' })
-    photo?: string;
+    @ApiProperty({ type: 'string', format: 'binary' ,description: 'URL de la foto de perfil', example: 'https://tu-servidor.com/uploads/profile_1.jpg' })
+    profileImage?: any;
 
     @IsString({ message: 'El campo userName debe ser un String' })
     @IsNotEmpty()
@@ -19,6 +19,33 @@ export class CreateUserDto {
     @IsNotEmpty()
     @ApiProperty({description: 'Hace referencia al apellido del usuario' , example:'UsuarioApellido 1' })
     userLastName:string
+
+    @IsString({ message: 'El campo country debe ser un String' })
+    @IsNotEmpty()
+    @ApiProperty({description: 'Hace referencia al Pais del usuario' , example:'Argentina' })
+    country:string
+
+
+    @IsString({ message: 'El campo province debe ser un String' })
+    @IsNotEmpty()
+    @ApiProperty({description: 'Hace referencia a la provincia del usuario' , example:'Cordoba' })
+    province:string
+
+
+    @IsString({ message: 'El campo city debe ser un String' })
+    @IsNotEmpty()
+    @ApiProperty({description: 'Hace referencia a la ciudad del usuario' , example:'Villa Maria' })
+    city:string
+
+    @IsString({ message: 'El campo email debe ser un String' })
+    @IsNotEmpty()
+    @ApiProperty({description: 'Hace referencia al email del usuario' , example:'correo@mail.com' })
+    email:string
+
+    @IsString({ message: 'El campo dniCuit debe ser un String' })
+    @IsNotEmpty()
+    @ApiProperty({description: 'Hace referencia al dniCuit del usuario' , example:'20123456780' })
+    dniCuit:string
 
 
     @IsObject({ message: 'El campo idJob debe ser un objeto' })

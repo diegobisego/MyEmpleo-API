@@ -7,7 +7,7 @@ export class User {
   id: number;
 
   @Column({ nullable: true, type: 'varchar', length: 255 })
-  photoPath: string;
+  profileImage: any;
 
   @Column({ nullable: false, type: 'varchar', length: 50 })
   userName: string;
