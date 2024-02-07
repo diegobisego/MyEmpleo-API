@@ -6,7 +6,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true, type: 'varchar', length: 255 })
+  @Column({ nullable: true, type: 'varchar', length: 255,  })
   profileImage: any;
 
   @Column({ nullable: false, type: 'varchar', length: 50 })
