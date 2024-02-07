@@ -8,6 +8,8 @@ import { UserModule } from './user/user.module';
 import { getDatabaseConfig } from 'src/config/dbConfig'; 
 
 import appConfig from 'src/config/app.config';  
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer'; 
 
 @Module({
   imports: [
@@ -19,6 +21,15 @@ import appConfig from 'src/config/app.config';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig],
+    }),
+    MulterModule.register({
+      storage: diskStorage({
+        destination: './uploads', // directorio donde se guardarán las imágenes
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, file.fieldname + '-' + uniqueSuffix);
+        },
+      }),
     }),
     UserModule,
   ],
