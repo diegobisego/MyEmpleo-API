@@ -1,9 +1,9 @@
-import { Injectable, BadRequestException, UploadedFile } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { validate } from 'class-validator';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { saveProfileImage } from '../utils/functions/savePhoto';
 
 @Injectable()
@@ -13,36 +13,39 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async createUser(@UploadedFile() file: Express.Multer.File, createUserDto: CreateUserDto) {
-    try {
-      // Validar el DTO usando class-validator
-      const validationErrors = await validate(createUserDto);
-      if (validationErrors.length > 0) {
-        throw new BadRequestException(validationErrors);
-      }
+  async createUser(createUserDto: CreateUserDto,profileImageBuffer?: Buffer): Promise<User> {
 
-      // Crear una instancia de User con los datos del DTO
-      const userToCreate = this.userRepository.create(createUserDto);
+    const userToCreate = this.userRepository.create(createUserDto);
 
-      // Verificar si la imagen está presente en la carga de archivos y guardarla
-      if (file) {
-        // Aquí puedes manejar la carga del archivo con Multer
-        // y guardar la ruta en tu directorio o base de datos
-        const imagePath = saveProfileImage(file.buffer, userToCreate.id);
-        // Guardar la ruta de la imagen en el campo de la base de datos
-        userToCreate.profileImage = imagePath;
-      }
-
-      // Guardar el usuario en la base de datos
-      const createdUser = await this.userRepository.save(userToCreate);
-
-      if (createdUser) {
-        return createdUser;
-      } else {
-        throw new BadRequestException('Error al intentar crear el Usuario');
-      }
-    } catch (error) {
-      throw new BadRequestException(error.message);
+    if (profileImageBuffer) {
+      // Procesar y guardar la imagen según tus necesidades
+      const imagePath = saveProfileImage(profileImageBuffer, userToCreate.id);
+      userToCreate.profileImage = imagePath;
     }
+
+    return await this.userRepository.save(userToCreate);
+  }
+
+  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const existingUser = await this.userRepository.findOne({ where: { id } });
+
+    if (!existingUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    // Actualizar campos del usuario según el DTO
+    this.userRepository.merge(existingUser, updateUserDto);
+
+    return await this.userRepository.save(existingUser);
+  }
+
+  async getUser(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
   }
 }

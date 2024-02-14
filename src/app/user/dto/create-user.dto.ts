@@ -20,6 +20,8 @@ export class CreateUserDto {
     @ApiProperty({description: 'Hace referencia al apellido del usuario' , example:'UsuarioApellido 1' })
     userLastName:string
 
+
+
     @IsString({ message: 'El campo country debe ser un String' })
     @IsNotEmpty()
     @ApiProperty({description: 'Hace referencia al Pais del usuario' , example:'Argentina' })
@@ -42,16 +44,21 @@ export class CreateUserDto {
     @ApiProperty({description: 'Hace referencia al email del usuario' , example:'correo@mail.com' })
     email:string
 
+    @IsString({ message: 'El campo password debe ser un String' })
+    @IsNotEmpty()
+    @ApiProperty({description: 'Hace referencia al password del usuario' , example:'Password1' })
+    password:string
+
     @IsString({ message: 'El campo dniCuit debe ser un String' })
     @IsNotEmpty()
     @ApiProperty({description: 'Hace referencia al dniCuit del usuario' , example:'20123456780' })
     dniCuit:string
 
 
-    @IsObject({ message: 'El campo idJob debe ser un objeto' })
+    @IsNumber({},{ message: 'El campo idJob debe ser un objeto' })
     @IsNotEmpty()
     @ApiProperty({ description:'Id de del Job, debe ser un objeto con id', example:'{"id": 2}' })
-    idJob: object;
+    idJob: number;
 
     @IsObject({ message: 'El campo idTaxCondition debe ser un objeto' })
     @IsNotEmpty()
