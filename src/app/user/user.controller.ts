@@ -49,7 +49,7 @@ export class UserController {
 // REGISTRO DE USUARIO
   @ApiOperation({
     summary: 'Registro de Usuarios',
-    description: 'Registro del usuario',
+    description: 'Registro del usuario, se devolvera el id del usuario y un token asociado',
   })
   @ApiResponse({ status: 201, description: 'Usuario creado con éxito' })
   @ApiResponse({ status: 404, description: 'Not Found' })
