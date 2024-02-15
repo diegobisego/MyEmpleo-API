@@ -5,12 +5,16 @@ import { User } from './entities/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs/promises';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
 @ApiTags('Usuarios')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+
+
+  // CREACION DE USUARIO
   @ApiOperation({
     summary: 'Creacion de Usuarios',
     description: 'Crea un usuario en la base de datos',
@@ -40,4 +44,35 @@ export class UserController {
       );
     }
   }
+
+
+// REGISTRO DE USUARIO
+  @ApiOperation({
+    summary: 'Registro de Usuarios',
+    description: 'Registro del usuario',
+  })
+  @ApiResponse({ status: 201, description: 'Usuario creado con éxito' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+  @Post('registerUser')
+  async postRegisterUser(@Body() createAuthDto: CreateAuthDto): Promise<any> {
+    try {
+      const register = await this.userService.registerUser(createAuthDto)
+      return register;
+    } catch (error) {
+      throw new HttpException(
+        `Error al intentar registrar el usuario: ${
+          error.message || 'Error interno del servidor'
+        }`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+
+
+
+
+
+
 }

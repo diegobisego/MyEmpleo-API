@@ -5,16 +5,25 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { saveProfileImage } from '../utils/functions/savePhoto';
+import { CreateAuthDto } from './dto/create-auth.dto';
+import { Auth } from './entities/auth.entity';
+import { JwtService } from '@nestjs/jwt';
+import * as validator from 'validator';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Auth)
+    private readonly authRepository: Repository<Auth>,
+    private jwtService: JwtService,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto,profileImageBuffer?: Buffer): Promise<User> {
-
+  async createUser(
+    createUserDto: CreateUserDto,
+    profileImageBuffer?: Buffer,
+  ): Promise<User> {
     const userToCreate = this.userRepository.create(createUserDto);
 
     if (profileImageBuffer) {
@@ -47,5 +56,45 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async registerUser(createAuthDto: CreateAuthDto): Promise<any> {
+    try {
+      const { user } = createAuthDto;
+
+      const isValidEmail = validator.isEmail(user);
+
+      if (!isValidEmail) {
+        return {
+          stats: false,
+          payload: 'correo electronico no valido',
+        };
+      }
+
+      const exist = await this.authRepository.findOne({ where: { user } });
+
+      if (exist) {
+        return {
+          stats: false,
+          payload: 'Usuario ya registrado, redirigir al login',
+        };
+      }
+
+      const result = this.authRepository.create(createAuthDto);
+      const saveUser = await this.authRepository.save(result);
+
+      // Convertir a un objeto plano
+      const plainUser = Object.assign({}, saveUser);
+      return {
+        access_token: await this.jwtService.signAsync(plainUser),
+        idUser: saveUser.id
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        stats: false,
+        payload: `Error al intentar crear el usuario: ${error}`,
+      };
+    }
   }
 }
