@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Job } from './job.entity';
+import { TaxCondicion } from './taxCondition.entity';
+import { Auth } from './auth.entity';
 
 @Entity()
 export class User {
@@ -43,13 +45,19 @@ export class User {
   @Column({ nullable: false, type: 'varchar' })
   dniCuit: string;
 
-  @ManyToOne(() => Job, { eager: true })
-  @JoinColumn({ name: 'idTaxCondicion' })
-  idTaxCondition: Object;
+  @ManyToOne(() => TaxCondicion, { eager: true })
+  @JoinColumn({ name: 'idTaxCondition' })
+  idTaxCondition: number;
 
   @Column({ nullable: false, type: 'int' })
   serviceCost: number;
 
   @Column({ nullable: true, type: 'varchar' })
   businessName: string;
+
+  @ManyToOne(() => Auth, { eager: true })
+  @JoinColumn({ name: 'idAuth' })
+  idAuth: number;
+
+
 }
