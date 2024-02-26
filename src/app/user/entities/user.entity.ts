@@ -31,7 +31,7 @@ export class User {
   country: string;
 
   @Column({ nullable: false, type: 'varchar' })
-  province: string;
+  province: string; 
 
   @Column({ nullable: false, type: 'varchar' })
   city: string;
@@ -59,5 +59,5 @@ export class User {
   @JoinColumn({ name: 'idAuth' })
   idAuth: number;
 
-
+  // agregar fecha de creacion
 }

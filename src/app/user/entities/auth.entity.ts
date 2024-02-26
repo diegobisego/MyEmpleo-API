@@ -16,5 +16,7 @@ import {
     @Column({ nullable: false, type: 'varchar', length: 50 })
     password: string;
 
+    // fechas de creacion, agregar
+
   }
   
